@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kursöversikt – AI för lärare och pedagoger (40 YH-p)</title>
+<style>
+  :root {
+    --bg: #000000;
+    --card-bg: #111111;
+    --text: #ffffff;
+    --muted: #b0b0b0;
+    --orange: #E84C22;
+    --blue: #2B78E4;
+    --purple: #8E44AD;
+    --green: #27AE60;
+    --gold: #D68910;
+    --accent: #f39c12;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 24px 32px;
+    line-height: 1.45;
+  }
+
+  /* Header & Navigation */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    text-transform: uppercase;
+    font-size: 24px;
+    margin: 0 0 4px 0;
+    letter-spacing: 1px;
+  }
+
+  p.sub {
+    color: var(--muted);
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    background: #181818;
+    color: #fff;
+    border: 1.5px solid #444;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .tab-btn:hover {
+    border-color: #fff;
+  }
+
+  .tab-btn.active {
+    background: var(--orange);
+    border-color: #fff;
+  }
+
+  /* Views */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Section Titles */
+  .section-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--accent);
+    margin: 18px 0 10px 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .section-title span.meta {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: none;
+    font-weight: normal;
+  }
+
+  /* 5-Column Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .box {
+    border: 1.5px solid #ffffff;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    transition: transform 0.15s, opacity 0.2s, box-shadow 0.15s;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 108px;
+  }
+
+  .box:hover {
+    transform: scale(1.04);
+    box-shadow: 0 6px 20px rgba(255,255,255,0.18);
+    z-index: 2;
+  }
+
+  .box.dimmed {
+    opacity: 0.2;
+    transform: scale(0.98);
+  }
+
+  .date {
+    font-size: 11px;
+    font-weight: bold;
+    opacity: 0.92;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .title {
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1.3;
+    margin: 4px 0;
+  }
+
+  .badge {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 10px;
+    background: rgba(0,0,0,0.42);
+    padding: 3px 7px;
+    border-radius: 3px;
+    align-self: center;
+  }
+
+  .orange { background-color: var(--orange); }
+  .blue   { background-color: var(--blue); }
+  .purple { background-color: var(--purple); }
+  .green  { background-color: var(--green); }
+  .gold   { background-color: var(--gold); }
+
+  /* Interactive Legend */
+  .legend-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 12px;
+    border-top: 1px solid #222;
+    gap: 12px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    background: #121212;
+    transition: all 0.15s;
+  }
+
+  .legend-item:hover, .legend-item.active {
+    border-color: #fff;
+    background: #222;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    border: 1px solid #fff;
+    border-radius: 2px;
+  }
+
+  .hint-text {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Modal Popup for Lesson Details */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .modal {
+    background: #0d0d0d;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    max-width: 680px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.9);
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid #fff;
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+  }
+
+  .close-btn {
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    border: 1px solid #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+
+  .detail-card {
+    background: #161616;
+    border: 1px solid #333;
+    padding: 12px;
+    border-radius: 4px;
+  }
+
+  .detail-card h4 {
+    margin: 0 0 6px 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .detail-card p {
+    margin: 0;
+    font-size: 13px;
+    color: #eaeaea;
+  }
+
+  /* Lesson 1 & 2 Check-in & Circle View */
+  .checkin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 14px;
+  }
+
+  .checkin-box {
+    background-color: var(--orange);
+    border: 2px solid #fff;
+    border-radius: 6px;
+    padding: 18px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .checkin-box:hover {
+    transform: translateY(-3px);
+  }
+
+  .checkin-box h3 {
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    font-size: 15px;
+  }
+
+  .checkin-box p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .circle-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 16px 0 24px 0;
+  }
+
+  @media (max-width: 800px) {
+    .checkin-grid, .circle-steps { grid-template-columns: 1fr; }
+  }
+
+  /* Examinations & Content Cards */
+  .exam-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .three-col-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .exam-cards, .three-col-cards { grid-template-columns: 1fr; }
+  }
+
+  .exam-card {
+    background: #121212;
+    border: 1.5px solid #fff;
+    border-radius: 6px;
+    padding: 18px;
+  }
+
+  .exam-card h3 {
+    margin: 0 0 8px 0;
+    color: var(--accent);
+    font-size: 15px;
+    text-transform: uppercase;
+  }
+
+  .grade-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  /* Interactive Slide Stepper for Lesson 2 */
+  .slide-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 12px 0 18px 0;
+  }
+
+  .slide-pill {
+    background: #161616;
+    color: #fff;
+    border: 1.5px solid #555;
+    padding: 7px 13px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .slide-pill:hover {
+    border-color: #fff;
+  }
+
+  .slide-pill.active {
+    background: var(--gold);
+    border-color: #fff;
+  }
+
+  .l2-slide {
+    display: none;
+  }
+
+  .l2-slide.active {
+    display: block;
+  }
+
+  .blackbox-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1.3fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 850px) {
+    .blackbox-flow { grid-template-columns: 1fr; }
+    .arrow-sep { display: none; }
+  }
+
+  .arrow-sep {
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--accent);
+    text-align: center;
+  }
+
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  @media (max-width: 1000px) {
+    .timeline-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div>
+      <h1>AI FÖR LÄRARE OCH PEDAGOGER – 20 VECKOR (40 YH-POÄNG)</h1>
+      <p class="sub">Måndagar kl. 15:15–16:45 | Utbildare & Kursledare: Hani Halilovic | ABF Stockholm Yrkeshögskolan</p>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('overview', this)">🗺️ Utzoomad Kursöversikt</button>
+      <button class="tab-btn" onclick="switchView('omniway', this)">📚 Kursveckor & Litteratur</button>
+      <button class="tab-btn" onclick="switchView('lesson1', this)">⚡ Lektion 1 (26 okt)</button>
+      <button class="tab-btn" onclick="switchView('lesson2', this)">🖥️ Lektion 2: Föreläsning (2 nov)</button>
+<button class="tab-btn" onclick="switchView('lesson3', this)">🖥️ Lektion 3: Föreläsning (9 nov)</button>
+      <button class="tab-btn" onclick="switchView('exams', this)">🎓 Uppgifter & Betygskrav</button>
+    </div>
+  </div>
+
+  <!-- VIEW 1: UTZOOMAD KURSÖVERSIKT -->
+  <div id="view-overview" class="view active">
+    <div class="section-title">
+      <span>DEL 1 – TEORETISK GRUND (VECKA 1–10 | YHAIAI03, 20 P): AI i skolan – Möjligheter, utmaningar & säker implementering</span>
+      <span class="meta">26 okt – 28 dec (Kursvecka 1–10) | Kursbok: Thomas Nygren ("AI i skolan") & EU:s AI-förordning</span>
+    </div>
+    <div class="grid" id="grid-part1">
+      <div class="box orange" data-cat="orange" onclick="openLesson(1)">
+        <div class="date">Vecka 1 • Mån 26 Okt</div>
+        <div class="title">Kursintroduktion & Lärarautonomi</div>
+        <div class="badge">Startenkät senast 1/11</div>
+      </div>
+      <div class="box orange" data-cat="orange" onclick="openLesson(2)">
+        <div class="date">Vecka 2 • Mån 2 Nov</div>
+        <div class="title">AI:s roll – Möjligheter & utmaningar</div>
+        <div class="badge">Svarta lådan, LLM & Process</div>
+      </div>
+      <div class="box blue" data-cat="blue" onclick="openLesson(3)">
+        <div class="date">Vecka 3 • Mån 9 Nov</div>
+        <div class="title">Individanpassat lärande & Inkludering</div>
+        <div class="badge">📌 Start Uppgift 1 (a/b)</div>
+      </div>
+      <div class="box gold" data-cat="gold" onclick="openLesson(4)">
+        <div class="date">Vecka 4 • Mån 16 Nov</div>
+        <div class="title">Källkritik, Bias & Algoritmer</div>
+        <div class="badge">🎙️ Gäst: Kristina Alexandersson</div>
+      </div>
+      <div class="box purple" data-cat="purple" onclick="openLesson(5)">
+        <div class="date">Vecka 5 • Mån 23 Nov</div>
+        <div class="title">Etik, ansvar, GDPR & Dataskydd</div>
+        <div class="badge">Elevintegritet & Shadow AI</div>
+      </div>
+      <div class="box blue" data-cat="blue" onclick="openLesson(6)">
+        <div class="date">Vecka 6 • Mån 30 Nov</div>
+        <div class="title">Implementering av AI i praktiken</div>
+        <div class="badge">Från teori till praktik</div>
+      </div>
+      <div class="box purple" data-cat="purple" onclick="openLesson(7)">
+        <div class="date">Vecka 7 • Mån 7 Dec</div>
+        <div class="title">Implementera AI på rätt grunder</div>
+        <div class="badge">✅ Inl. Uppg 1 • 📌 Start Uppg 2</div>
+      </div>
+      <div class="box purple" data-cat="purple" onclick="openLesson(8)">
+        <div class="date">Vecka 8 • Mån 14 Dec</div>
+        <div class="title">Fördjupad AI-etik & Integritet</div>
+        <div class="badge">Case & Handledning Uppg 2</div>
+      </div>
+      <div class="box orange" data-cat="orange" onclick="openLesson(9)">
+        <div class="date">Vecka 9 • Mån 21 Dec</div>
+        <div class="title">Digitalt prov & Helhetsförståelse</div>
+        <div class="badge">📝 Digitalt prov Del 1 (G/VG)</div>
+      </div>
+      <div class="box orange" data-cat="orange" onclick="openLesson(10)">
+        <div class="date">Vecka 10 • Mån 28 Dec</div>
+        <div class="title">Avslut Del 1 & Kompletteringar</div>
+        <div class="badge">✅ Inl. Uppgift 2 & Syntes</div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>DEL 2 – PRAKTISK TILLÄMPNING (VECKA 11–20 | YHAIPA03, 20 P): Praktisk användning av AI i undervisning, planering, uppföljning & feedback</span>
+      <span class="meta">4 jan – 8 mars (Kursvecka 11–20) | Kursböcker: Rangsjö & Tensetti ("Med AI som stöd"), Nygren & Promptskolan 1–3</span>
+    </div>
+    <div class="grid" id="grid-part2">
+      <div class="box gold" data-cat="gold" onclick="openLesson(11)">
+        <div class="date">Vecka 11 • Mån 4 Jan</div>
+        <div class="title">Kickoff Del 2 & Promptskolan 1–3</div>
+        <div class="badge">🎙️ Tensetti & Rangsjö</div>
+      </div>
+      <div class="box blue" data-cat="blue" onclick="openLesson(12)">
+        <div class="date">Vecka 12 • Mån 11 Jan</div>
+        <div class="title">Planering av undervisning med AI</div>
+        <div class="badge">📌 Start Uppgift 1 (Del 2)</div>
+      </div>
+      <div class="box blue" data-cat="blue" onclick="openLesson(13)">
+        <div class="date">Vecka 13 • Mån 18 Jan</div>
+        <div class="title">Planering, Agenter & Kollegialitet</div>
+        <div class="badge">✅ Inl. Uppgift 1 (Del 2)</div>
+      </div>
+      <div class="box green" data-cat="green" onclick="openLesson(14)">
+        <div class="date">Vecka 14 • Mån 25 Jan</div>
+        <div class="title">Individualisering & AI-agenter</div>
+        <div class="badge">📌 Start Uppg 2 (NotebookLM)</div>
+      </div>
+      <div class="box green" data-cat="green" onclick="openLesson(15)">
+        <div class="date">Vecka 15 • Mån 1 Feb</div>
+        <div class="title">Designa lärmiljö i NotebookLM</div>
+        <div class="badge">Adaptiva miljöer i praktiken</div>
+      </div>
+      <div class="box purple" data-cat="purple" onclick="openLesson(16)">
+        <div class="date">Vecka 16 • Mån 8 Feb</div>
+        <div class="title">Källkritik, AI-texter & Rättssäkerhet</div>
+        <div class="badge">✅ Inl. Uppgift 2 (Del 2)</div>
+      </div>
+      <div class="box blue" data-cat="blue" onclick="openLesson(17)">
+        <div class="date">Vecka 17 • Mån 15 Feb</div>
+        <div class="title">Återkoppling & Bedömning med AI</div>
+        <div class="badge">Prompta feedback via agent</div>
+      </div>
+      <div class="box gold" data-cat="gold" onclick="openLesson(18)">
+        <div class="date">Vecka 18 • Mån 22 Feb</div>
+        <div class="title">Framtidsspaning, Q&A & Syntes</div>
+        <div class="badge">🎙️ Q&A: Johan Falk</div>
+      </div>
+      <div class="box orange" data-cat="orange" onclick="openLesson(19)">
+        <div class="date">Vecka 19 • Mån 1 Mars</div>
+        <div class="title">Digitalt Prov (Del 2) & Reflektion</div>
+        <div class="badge">📝 Digitalt prov Del 2 (G/VG)</div>
+      </div>
+      <div class="box gold" data-cat="gold" onclick="openLesson(20)">
+        <div class="date">Vecka 20 • Mån 8 Mars</div>
+        <div class="title">Avslutning, Återblick & Utcheckning</div>
+        <div class="badge">🎓 Utcheckning 40 YH-p</div>
+      </div>
+    </div>
+
+    <div class="legend-bar">
+      <div class="legend">
+        <div class="legend-item active" onclick="filterCategory('all', this)">
+          <span>Visa alla (20)</span>
+        </div>
+        <div class="legend-item" onclick="filterCategory('orange', this)">
+          <i class="dot orange"></i><span>Didaktik, Lärande & Helhetsförståelse</span>
+        </div>
+        <div class="legend-item" onclick="filterCategory('blue', this)">
+          <i class="dot blue"></i><span>Praktisk Planering, Promptdesign & Återkoppling</span>
+        </div>
+        <div class="legend-item" onclick="filterCategory('purple', this)">
+          <i class="dot purple"></i><span>Etik, GDPR, Rättssäkerhet & Källkritik</span>
+        </div>
+        <div class="legend-item" onclick="filterCategory('green', this)">
+          <i class="dot green"></i><span>AI-agenter, NotebookLM & Adaptiva lärmiljöer</span>
+        </div>
+        <div class="legend-item" onclick="filterCategory('gold', this)">
+          <i class="dot gold"></i><span>Gästföreläsare & Kursavslutning</span>
+        </div>
+      </div>
+      <div class="hint-text">💡 Klicka på valfri lektionsbox för att öppna veckans innehåll, sidhänvisningar, mål och "Pröva & Öva"-aktivitet.</div>
+    </div>
+  </div>
+
+  <!-- VIEW OMNIWAY: KURSVECKOR & LITTERATURSTRUKTUR I OMNIWAY -->
+  <div id="view-omniway" class="view">
+    <div class="section-title">
+      <span>DEL 1 (YHAIAI03, 20 P): KURSVECKA 1–10 I OMNIWAY (26 OKT – 28 DEC)</span>
+      <span class="meta">Huvudbok: Thomas Nygren ("AI i skolan") & EU:s AI-förordning</span>
+    </div>
+    <div class="exam-cards">
+      <div class="exam-card" style="border-color: var(--orange);">
+        <h3>Kursvecka 1 (Mån 26 okt): Kursintroduktion & Lärarautonomi</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Introduktion till kursens syfte, struktur, mål och bedömningsformer (IG/G på Uppgift 1 & 2, VG-chans på Digitalt prov). Genomgång av Omniway, arbetssätt och kursboken <em>AI i skolan</em> (Nygren). Gemensam uppstart och reflektion kring lärarautonomi.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--orange);">
+        <h3>Kursvecka 2 (Mån 2 nov): AI:s roll i utbildning – möjligheter & utmaningar</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> AI-historik, språkmodeller (LLM) vs gränssnitt, GPAI vs DSGAI, "Black Box"-problematiken, dold bias i bild/text samt lärarens förändrade arbetsprocess (80 %-regeln och iterativ promptning) utifrån Nygren och Rangsjö & Tensetti.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>Kursvecka 3 (Mån 9 nov): Individanpassat lärande och inkludering med AI</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Hur AI används för att skapa individanpassade lärvägar och inkluderande lärmiljöer (både lärar- och elevfokus). Workshop med praktiska AI-verktyg och uppstart av <strong>Inlämningsuppgift 1 (IG/G)</strong>: välj <em>a) Reflektionsrapport</em> eller <em>b) Konkret undervisningsplan</em>.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--gold);">
+        <h3>Kursvecka 4 (Mån 16 nov): Källkritik, Bias, Algoritmer & Lärarrollen</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Hur generativ AI och algoritmer påverkar källkritik och informationssökning. Gästföreläsning med <strong>Kristina Alexandersson</strong> (Internetstiftelsen & medförfattare i Rangsjös och Tensettis bok <em>Med AI som stöd</em>) följt av praktisk övning med <em>Tvärtom-metoden</em>.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--purple);">
+        <h3>Kursvecka 5 (Mån 23 nov): Etik, ansvar och dataskydd (GDPR & Skollag)</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Etiska och juridiska frågor kopplade till AI i skolan, inklusive dataskydd, GDPR, skollag, "Shadow AI" och elevintegritet. Arbete med etiska dilemman (<em>Apollo 13-case</em>) och lärarens professionella ansvar.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>Kursvecka 6 (Mån 30 nov): Implementering av AI i praktiken</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Från teori till praktik – hur AI kan planeras och införas i undervisningen på ett pedagogiskt och etiskt hållbart sätt utifrån kursboken <em>AI i skolan</em>. Workshop och handledning kring strategier för implementering i en specifik skolkontext.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--purple);">
+        <h3>Kursvecka 7 (Mån 7 dec): Att implementera AI på rätt grunder</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Olika perspektiv på AI, EU:s AI-förordning och vilka kompetenser som bör fokuseras på i samband med AI-användning i skolan. <strong>Inlämning av Uppgift 1</strong> och uppstart av <strong>Inlämningsuppgift 2 (Säker AI-implementeringsplan, IG/G)</strong>.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--purple);">
+        <h3>Kursvecka 8–10 (14 dec – 28 dec): Fördjupad etik, Digitalt prov & Avslut Del 1</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Den 14/12 fördjupad AI-etik och case-handledning inför Uppgift 2. Den 21/12 sammanfattning, frågestund och <strong>Digitalt prov Del 1 (IG/G/VG)</strong>. Den 28/12 avrundning av Del 1, erfarenhetsutbyte och slutinlämning/kompletteringar.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:28px;">
+      <span>DEL 2 (YHAIPA03, 20 P): KURSVECKA 11–20 I OMNIWAY (4 JAN – 8 MARS)</span>
+      <span class="meta">Kursböcker: Rangsjö & Tensetti ("Med AI som stöd"), Nygren ("AI i skolan") & Promptskolan del 1–3</span>
+    </div>
+    <div class="exam-cards">
+      <div class="exam-card" style="border-color: var(--gold);">
+        <h3>Vecka 11 / Del 2 Vecka 1 (Mån 4 jan): Kursintroduktion Del 2 & Promptskolan</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Introduktion till Del 2:s syfte, schema, mål och bedömningsformer (AIAS-skalan nivå 2 vid uppgifter). Gästföreläsning med bokförfattarna <strong>Jonatan Tensetti & Joel Rangsjö</strong> (<em>Med AI som stöd</em>) samt genomgång av <strong>Promptskolan del 1–3</strong> (Roll, Kontext, Uppgift, Format, Ton).</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>Vecka 12–13 / Del 2 Vecka 2–3 (11 jan & 18 jan): Planering av undervisning med AI som stöd</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Testa och utvärdera praktiska och adaptiva AI-verktyg, lärplattformar och delbara AI-agenter (i t.ex. Copilot/Gemini) för undervisningsplanering. <strong>Examineras i Inlämningsuppgift 1 (Del 2, IG/G):</strong> Översiktlig reflektionsrapport (800–1000 ord, 2 delar) med koppling till Nygren (s. 6–13, 50–65, 202–222) och Rangsjö & Tensetti.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--green);">
+        <h3>Vecka 14–15 / Del 2 Vecka 4–5 (25 jan & 1 feb): Individualisering, AI-agenter & NotebookLM</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Från "fri" AI till pedagogiskt designade lärmiljöer. Vi testar hur AI-agenter och <strong>NotebookLM</strong> skapar elevanpassade, interaktiva lärmiljöer baserade på lärarens kvalitetssäkrade material. Förberedelse och handledning inför <strong>Inlämningsuppgift 2 (Del 1: Designrapport i NotebookLM)</strong>.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--purple);">
+        <h3>Vecka 16 / Del 2 Vecka 6 (Mån 8 feb): Källkritik, AI-texter och tillförlitlighet</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Varför det är problematiskt att identifiera AI-genererade texter och hur vi skapar tillförlitliga, rättssäkra bedömningar och examinationer (Rangsjö & Tensetti kap. 7–8, Nygren kap. 4 s. 123–128). <strong>Inlämning av Inlämningsuppgift 2 (Del 2, IG/G)</strong>.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>Vecka 17 / Del 2 Vecka 7 (Mån 15 feb): Återkoppling och bedömning med AI</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Hur man arbetar med snabb, konkret och formativ återkoppling samt analyserar elevresultat i en trygg och säker miljö. Praktisk workshop i att prompta återkoppling via en chattbot och/eller AI-agent som identifierar både styrkor och utvecklingsområden.</p>
+      </div>
+      <div class="exam-card" style="border-color: var(--gold);">
+        <h3>Vecka 18–20 / Del 2 Vecka 8 (22 feb, 1 mars & 8 mars): Q&A med Johan Falk, Digitalt prov & Avslut</h3>
+        <p style="font-size:13px; margin:0;"><strong>Innehåll & Aktivitet:</strong> Den 22/2 gästas vi av <strong>Johan Falk</strong> för Q&A och framtidsspaning inför provet. Den 1/3 genomförs <strong>Digitalt prov för Del 2 (IG/G/VG)</strong>. Den 8/3 avrundar vi hela utbildningen (40 YH-p) med återblickar, reflektion och ev. kompletteringar.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: LEKTION 1 – INCHECKNING & WORKSHOP (HÅBO-STILEN) -->
+  <div id="view-lesson1" class="view">
+    <div class="section-title">
+      <span>VÅR METODIK PÅ MÅNDAGAR (15:15–16:45): DEN FYRDELADE LÄRANDECIRKELN</span>
+    </div>
+    <div class="circle-steps">
+      <div class="box orange" style="cursor: default;">
+        <div class="date">STEG 1 (15:30–15:40)</div>
+        <div class="title">INCHECKNING</div>
+        <div class="badge">Aktivera hjärnan på temat</div>
+      </div>
+      <div class="box gold" style="cursor: default;">
+        <div class="date">STEG 2 (15:45–16:15)</div>
+        <div class="title">KONCEPT & GÄSTER</div>
+        <div class="badge">Teori, Litteratur & Gäster</div>
+      </div>
+      <div class="box blue" style="cursor: default;">
+        <div class="date">STEG 3 (16:15–16:35)</div>
+        <div class="title">PRÖVA OCH ÖVA</div>
+        <div class="badge">Promptar, Agenter & Case</div>
+      </div>
+      <div class="box green" style="cursor: default;">
+        <div class="date">STEG 4 (16:35–16:45)</div>
+        <div class="title">SUMMERA & LÄNKA</div>
+        <div class="badge">Mikroreflektion framåt</div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>INCHECKNING – ETT SÄTT ATT AKTIVERA HJÄRNAN PÅ WORKSHOPENS TEMA (LEKTION 1: 26 OKT)</span>
+      <span class="meta">Välj en av de 4 orangea rutorna i ert grupprum (4 min)</span>
+    </div>
+    <div class="checkin-grid">
+      <div class="checkin-box">
+        <h3>1. ÖPPEN FRÅGA?</h3>
+        <p>Vilket moment i din arbetsvecka stjäl mest tid från ditt faktiska, relationella möte med eleverna idag?</p>
+      </div>
+      <div class="checkin-box">
+        <h3>2. TA STÄLLNING?</h3>
+        <p>”Det måste vara professionen som avgör om, när och hur AI används i undervisningen.” – Vad krävs på din skola för att det ska bli verklighet?</p>
+      </div>
+      <div class="checkin-box">
+        <h3>3. TÄNKA PÅ EN HÄNDELSE?</h3>
+        <p>Berätta om ett tillfälle då en elev (eller kollega) använde AI på ett sätt som antingen överraskade eller oroade dig.</p>
+      </div>
+      <div class="checkin-box" onclick="this.querySelector('.answer').style.display='block'">
+        <h3>4. GISSA? (Klicka för facit)</h3>
+        <p>Hur stor andel av dagens AI-system omfattas INTE av tunga lagkrav i EU:s AI-förordning (AIA)?</p>
+        <p class="answer" style="display:none; margin-top:10px; background:rgba(0,0,0,0.45); padding:8px; border-radius:4px; font-weight:bold;">
+          ✅ Svar: Den stora majoriteten! De flesta vardagsverktyg (rättstavning, spamfilter, strukturering av eget material) klassas som "Ingen eller minimal risk".
+        </p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 26px;">
+      <span>PRÖVA OCH ÖVA (20 MIN): FÖRÄNDRING MED LÄRANDE – IDENTIFIERAT BEHOV PÅ SKOLAN</span>
+    </div>
+    <div class="box orange" style="text-align: left; padding: 20px; cursor: default;">
+      <div style="font-size: 16px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">
+        Case: Från "Shadow AI" och osäkerhet till kollegial trygghet
+      </div>
+      <p style="margin: 0 0 12px 0; font-size: 14px;">
+        Många medarbetare i skolan har varierande kunskap om AI och känner antingen oro inför generativa AI-verktyg – eller använder oreglerad "Shadow AI" på egen hand utan riktlinjer. Diskutera i gruppen och formulera tre konkreta insikter:
+      </p>
+      <ol style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6;">
+        <li><strong>Öka förståelsen:</strong> Vilka är de vanligaste missförstånden på era skolor idag kring vad ett AI-system är (och inte är)?</li>
+        <li><strong>Skapa trygghet:</strong> Vilket är det vanligaste misstaget kring elevdata (GDPR) eller bedömning som ni ser i vardagen?</li>
+        <li><strong>Praktisk avlastning:</strong> Vilken konkret arbetsuppgift vill ni allra helst spara tid på under våra 20 veckor tillsammans?</li>
+      </ol>
+    </div>
+  </div>
+ <!-- OMVÄRLDSSPANING & SUMMERING (LEKTION 1 & GENERELL RUTIN) -->
+    <div class="section-title" style="margin-top: 26px;">
+      <span>STEG 4 (16:30–16:45): VECKANS OMVÄRLDSSPANING, DELNING & UTCHECKNING</span>
+      <span class="meta">Stående inslag i slutet av varje måndagspass!</span>
+    </div>
+    <div class="exam-cards">
+      <div class="exam-card" style="border-color: var(--gold);">
+        <h3>🔭 Hanis Omvärldsspaning: Nya AI-nyheter & Verktyg</h3>
+        <ul style="font-size:13px; padding-left:18px; margin:0; line-height:1.6;">
+          <li><strong>Veckans viktigaste AI-nyhet:</strong> Vad har hänt inom AI, skola och EU:s regelverk sedan vi sågs sist?</li>
+          <li><strong>Nytt i verktygslådan:</strong> Kort spaning på nya funktioner i t.ex. Copilot, Gemini, ChatGPT eller NotebookLM.</li>
+          <li><strong>Didaktisk konsekvens:</strong> Hur påverkar detta vår vardag i klassrummet och planeringen framåt?</li>
+        </ul>
+      </div>
+      <div class="exam-card" style="border-color: var(--green);">
+        <h3>💬 Öppet golv: Deltagarnas spaningar & Tips!</h3>
+        <p style="font-size:13px; margin:0 0 8px 0;">
+          <strong>Ordet är fritt (muntligt eller i chatten):</strong>
+        </p>
+        <ul style="font-size:13px; padding-left:18px; margin:0; line-height:1.6;">
+          <li>Har du läst en spännande artikel, lyssnat på en podd eller hört en nyhet om AI i veckan?</li>
+          <li>Har du (eller en kollega/elev) testat en ny prompt eller ett verktyg som du vill tipsa gruppen om?</li>
+          <li><strong>Utcheckning i chatten:</strong> Vilken är din viktigaste insikt från dagens pass?</li>
+        </ul>
+      </div>
+    </div>
+
+  <!-- VIEW 2B: LEKTION 2 – INTERAKTIV FÖRELÄSNING & CASE -->
+  <div id="view-lesson2" class="view">
+    <div class="section-title">
+      <span>LEKTION 2 (MÅN 2 NOV KL. 15:15–16:45): AI I SKOLAN – MÖJLIGHETER, UTMANINGAR & "SVARTA LÅDAN"</span>
+      <span class="meta">Utbildare: Hani Halilovic | Uppdaterad och interaktiv föreläsningsvy</span>
+    </div>
+
+    <div class="slide-nav">
+      <button class="slide-pill active" onclick="switchL2Slide(1, this)">1. Incheckning (15:15)</button>
+      <button class="slide-pill" onclick="switchL2Slide(2, this)">2. AI-Historik & Vågor</button>
+      <button class="slide-pill" onclick="switchL2Slide(3, this)">3. Vad är AI, LLM & GPAI/DSGAI?</button>
+      <button class="slide-pill" onclick="switchL2Slide(4, this)">4. "Black Box" & Lärprocessen</button>
+      <button class="slide-pill" onclick="switchL2Slide(5, this)">5. Bias & Dolda Systemprompter</button>
+      <button class="slide-pill" onclick="switchL2Slide(6, this)">6. Möjligheter vs Utmaningar</button>
+      <button class="slide-pill" onclick="switchL2Slide(7, this)">7. 5-stegsprocess & 80%-regeln</button>
+      <button class="slide-pill" onclick="switchL2Slide(8, this)">8. Pröva & Öva + Summera</button>
+    </div>
+
+    <!-- SLIDE 1: INCHECKNING LEKTION 2 -->
+    <div id="l2-slide-1" class="l2-slide active">
+      <div class="section-title">
+        <span>STEG 1: INCHECKNING – AKTIVERA HJÄRNAN PÅ DAGENS TEMA (4 MIN)</span>
+        <span class="meta">Välj en av de 4 orangea boxarna att reflektera kring!</span>
+      </div>
+      <div class="checkin-grid">
+        <div class="checkin-box">
+          <h3>1. ÖPPEN FRÅGA?</h3>
+          <p>När du själv använder ChatGPT, Copilot eller Gemini – hur ofta nöjer du dig med det allra första svaret du får utan att iterera?</p>
+        </div>
+        <div class="checkin-box">
+          <h3>2. TA STÄLLNING?</h3>
+          <p>”Den som har störst nytta av AI i skolan är den som redan kan ämnet och behärskar lärprocessen.” – Håller du med Erik Winerö?</p>
+        </div>
+        <div class="checkin-box">
+          <h3>3. TÄNKA PÅ EN HÄNDELSE?</h3>
+          <p>Har du råkat ut för att en elev lämnat in en språkligt perfekt text där eleven sedan inte alls kunde förklara innehållet muntligt?</p>
+        </div>
+        <div class="checkin-box" onclick="this.querySelector('.answer2').style.display='block'">
+          <h3>4. GISSA? (Klicka för facit)</h3>
+          <p>Vilket årtionde myntades begreppet "Artificiell Intelligens" (AI) av John McCarthy och skapades Turing-testet?</p>
+          <p class="answer2" style="display:none; margin-top:10px; background:rgba(0,0,0,0.45); padding:8px; border-radius:4px; font-weight:bold;">
+            ✅ Svar: Redan på 1950-talet! AI är alltså en 75 år gammal forskningsdisciplin som haft två "AI-vintrar" innan dagens boom.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: AI-HISTORIK & VÅGOR -->
+    <div id="l2-slide-2" class="l2-slide">
+      <div class="section-title">
+        <span>FRÅN TURING TILL TRANFORMERS: HISTORIKEN BAKOM INTRESSET FÖR AI</span>
+        <span class="meta">Källa: Thomas Nygren ("AI i skolan", kap. 1) & Erik Winerö ("Undervisningens digitala dimensioner")</span>
+      </div>
+      <p style="font-size:14px; color:var(--muted); margin-top:0;">
+        Intresset för AI har inte varit en rak linje – det har pendlat mellan överdriven hype och tvära kast ("AI-vintrar") tills datorkapacitet och enorma textmängder möttes i dagens språkmodeller.
+      </p>
+      <div class="timeline-grid">
+        <div class="box orange" style="cursor:default;">
+          <div class="date">1950-TALET</div>
+          <div class="title">Turing & "AI" myntas</div>
+          <div class="badge">Alan Turing (Turing-testet) & John McCarthy (1956)</div>
+        </div>
+        <div class="box purple" style="cursor:default;">
+          <div class="date">1970-TALET</div>
+          <div class="title">Expertsystem & Hype</div>
+          <div class="badge">Regelstyrda system → Första "AI-vintern" ca 1980</div>
+        </div>
+        <div class="box blue" style="cursor:default;">
+          <div class="date">1980–1990-TALET</div>
+          <div class="title">Maskininlärning & Neurala nätverk</div>
+          <div class="badge">Nytt hopp → Andra "AI-vintern" på 90-talet</div>
+        </div>
+        <div class="box green" style="cursor:default;">
+          <div class="date">2010-TALET</div>
+          <div class="title">Djupinlärning (Deep Learning)</div>
+          <div class="badge">Självlärande lager, algoritmer & enorm datamängd</div>
+        </div>
+        <div class="box gold" style="cursor:default;">
+          <div class="date">NOV 2022 – 2024</div>
+          <div class="title">LLM-boomen & ChatGPT</div>
+          <div class="badge">Generativ AI släpps fritt & förändrar skolan direkt</div>
+        </div>
+        <div class="box orange" style="cursor:default;">
+          <div class="date">2025 – 2026+</div>
+          <div class="title">AI-agenter, Källstyrning & AIA</div>
+          <div class="badge">NotebookLM, resonerande modeller & EU:s AI-förordning</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: VAD ÄR AI, LLM OCH GPAI vs DSGAI? -->
+    <div id="l2-slide-3" class="l2-slide">
+      <div class="section-title">
+        <span>BEGREPPSKOLL: ARTIFICIELL INTELLIGENS, SPRÅKMODELLER (LLM) & GPAI vs DSGAI</span>
+        <span class="meta">Kopplat till Nygren (kap. 1–2), Promptskolan del 1 och EU:s AI-förordning</span>
+      </div>
+      <div class="three-col-cards">
+        <div class="exam-card" style="border-color: var(--orange);">
+          <h3>1. Vad är AI & Djupinlärning?</h3>
+          <p style="font-size:13px;"><strong>Ingen enhetlig definition i folkmun:</strong> Teknologier som efterliknar mänskligt tänkande/beteende och kan förbättra sin prestanda genom maskininlärning.<br><br>
+          <strong>Djupinlärning (Deep Learning):</strong> Använder <em>artificiella neurala nätverk</em> i många lager som imiterar hjärnans sätt att behandla mönster i bild, röst och text.<br><br>
+          <strong>EU:s AI-förordning (AIA):</strong> Definierar ett <em>AI-system</em> utifrån att det med varierande grad av autonomi drar slutsatser från indata för att generera utdata som påverkar fysiska eller virtuella miljöer.</p>
+        </div>
+
+        <div class="exam-card" style="border-color: var(--blue);">
+          <h3>2. Språkmodell (LLM) vs Chattbot</h3>
+          <p style="font-size:13px;"><strong>Språkmodellen (Motorn):</strong> En prediktionsmotor tränad på enorma mängder text för att förutspå nästa sannolika ord/token i ett sammanhang (t.ex. <em>GPT, Gemini, Claude, Llama</em>).<br><br>
+          <strong>Chattboten / Assistenten (Gränssnittet):</strong> Det användarvänliga "lagret" ovanpå språkmodellen (t.ex. <em>Microsoft Copilot, ChatGPT, Google Gemini</em>) som kopplar ihop modellen med webbsökning (Bing/Google) och skolans eget dataskalskydd (t.ex. Microsoft Graph).</p>
+        </div>
+
+        <div class="exam-card" style="border-color: var(--purple);">
+          <h3>3. GPAI vs DSGAI (Generativ AI)</h3>
+          <p style="font-size:13px;">🟦 <strong>GPAI (General-Purpose Generative AI):</strong> Allmän generativ AI som kan lösa många vitt skilda uppgifter i olika sammanhang (t.ex. skriva lektionsplan, koda, sammanfatta). Regleras särskilt i EU:s AI-förordning.<br><br>
+          🟩 <strong>DSGAI (Domain-Specific Generative AI):</strong> Avgränsad, bransch- eller domänspecifik AI som verkar inbyggd i ett system med ett smalt pedagogiskt eller administrativt syfte (eller när vi låser en AI till våra egna källor i t.ex. <em>NotebookLM</em>!).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: BLACK BOX-PROBLEMATIKEN & LÄRANDEPROCESSEN -->
+    <div id="l2-slide-4" class="l2-slide">
+      <div class="section-title">
+        <span>"BLACK BOX"-PROBLEMATIKEN – OCH VAR DET FAKTISKA LÄRANDET SKER!</span>
+        <span class="meta">Varför genvägen från Input till Resultat är skolans största didaktiska utmaning</span>
+      </div>
+      <div class="blackbox-flow">
+        <div class="box blue" style="cursor:default; min-height:150px;">
+          <div class="date">STEG 1: INPUT</div>
+          <div class="title">Prompt & Data</div>
+          <p style="font-size:12px; margin:6px 0 0 0;">Vi ger språkmodellen instruktioner, kontext och data. Detta steg kan lärare och elever styra.</p>
+        </div>
+        <div class="arrow-sep">➔</div>
+        <div class="box purple" style="cursor:default; min-height:150px; border-width:2.5px;">
+          <div class="date">STEG 2: "THE BLACK BOX" (OKLAR PROCESS)</div>
+          <div class="title">Vad hände egentligen här inne?!</div>
+          <p style="font-size:12px; margin:6px 0 0 0;">Vi kan inte se exakt hur modellen väger samman miljarder parametrar eller vilka dolda värderingar som styr. <br><strong>⚠️ OBS! I traditionell undervisning sker själva LÄRANDET precis här – i processen och tankearbetet!</strong></p>
+        </div>
+        <div class="arrow-sep">➔</div>
+        <div class="box green" style="cursor:default; min-height:150px;">
+          <div class="date">STEG 3: OUTPUT</div>
+          <div class="title">Resultatet</div>
+          <p style="font-size:12px; margin:6px 0 0 0;">En färdig text, bild eller lösning levereras på sekunder. Nu krävs ämneskunskap för att kunna värdera den!</p>
+        </div>
+      </div>
+      <div class="exam-card" style="border-color: var(--gold); margin-top: 14px;">
+        <h3>💡 Citat att bära med sig (Erik Winerö – Undervisningens digitala dimensioner):</h3>
+        <p style="font-size:14px; font-style:italic; margin:0;">
+          "Den som har nytta av AI är den som redan är duktig på de här processerna. En evig sanning är att du blir bra på det som du gör ofta och mycket."
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: BIAS & UNDERLIGGANDE PROMPTER -->
+    <div id="l2-slide-5" class="l2-slide">
+      <div class="section-title">
+        <span>BIAS, VÄRDERINGAR & UNDERLIGGANDE SYSTEMPROMPTER (2025 vs 2026)</span>
+        <span class="meta">Förberedelse inför Vecka 4 med Kristina Alexandersson & Nygrens kapitel om källkritik</span>
+      </div>
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--purple);">
+          <h3>🔍 Exemplet: "A room with board members around a table"</h3>
+          <p style="font-size:13px;">När vi ger en bildmodell en kort prompt händer två saker i det dolda:<br><br>
+          <strong>1. Träningsdatans bias:</strong> Historiska stereotyper i bildbanker på nätet (t.ex. att "styrelseledamöter" oftast avbildats som vita män i kostym).<br><br>
+          <strong>2. Systemets dolda "guardrails" (Underliggande prompter):</strong> För att motverka bias lägger AI-företagen ibland in osynliga instruktioner som skriver om din prompt bakom kulisserna för att skapa mångfald – eller så pendlar modellen tillbaka ett år senare (som i jämförelsen mellan DALL-E 2025 och 2026).</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--orange);">
+          <h3>🎯 Pedagogisk konsekvens i klassrummet</h3>
+          <p style="font-size:13px;">Som lärare och elev måste man förstå att <strong>inget AI-svar är "neutralt"</strong>:<br><br>
+          • Vilka normer, kulturella perspektiv (ofta angloamerikanska) och värderingar finns inbyggda i språkmodellen?<br>
+          • Hur mycket måste vi själva styra och specificera i vår prompt (Kontext, Roll, Format) för att inte bli passiva mottagare av modellens standardbias?<br>
+          • Detta leder oss rakt in i <strong>AI-litteracitet</strong> (Nygren kap. 4) och <em>Tvärtom-metoden</em> under Vecka 4!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: MÖJLIGHETER VS UTMANINGAR -->
+    <div id="l2-slide-6" class="l2-slide">
+      <div class="section-title">
+        <span>MÖJLIGHETER & UTMANINGAR MED AI I SKOLAN (NYGREN + RANGSJÖ & TENSETTI)</span>
+        <span class="meta">Kärnan i Lektion 2 och direkt underlag till er Inlämningsuppgift 1 (som startar nästa vecka!)</span>
+      </div>
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--green);">
+          <h3>✅ MÖJLIGHETER (När AI stärker lärandet & avlastar)</h3>
+          <ul style="font-size:13px; padding-left:18px; margin:0; line-height:1.6;">
+            <li><strong>Personligt lärande & individanpassning:</strong> Samma kunskapsmål men anpassade lärvägar, språknivåer och tempo (Nygren; Rangsjö & Tensetti).</li>
+            <li><strong>AI-handledning & direkt återkoppling:</strong> Sokratisk bollplank som ger ledtrådar när läraren inte hinner fram till alla samtidigt.</li>
+            <li><strong>Anpassade, multimodala läromedel:</strong> Snabbt skapa extramaterial, bildstöd, ordlistor och sammanfattningar.</li>
+            <li><strong>Studieteknisk rådgivning & läxhjälp:</strong> Träna begrepp genom självtest och förhörsfrågor i källstyrda miljöer (t.ex. NotebookLM).</li>
+          </ul>
+        </div>
+        <div class="exam-card" style="border-color: var(--orange);">
+          <h3>⚠️ UTMANINGAR (När AI stör lärprocessen)</h3>
+          <ul style="font-size:13px; padding-left:18px; margin:0; line-height:1.6;">
+            <li><strong>Oreflekterad kognitiv avlastning:</strong> <em>"För sanningen är att eleverna inte lär sig något alls av att låta en AI skriva en text som de sätter namn på och lämnar in"</em> (Rangsjö & Tensetti, 2024, s. 23).</li>
+            <li><strong>Fokus på slutprodukt istället för lärprocess:</strong> Om vi bara bedömer färdiga hemuppgifter urholkas både lärandet och rättssäkerheten.</li>
+            <li><strong>Sken av förståelse & hallucinationer:</strong> Svar som låter övertygande men innehåller sakfel.</li>
+            <li><strong>Likvärdighetsgapet:</strong> Elever med god förförståelse använder AI som hävstång – medan svagare elever riskerar att låta AI tänka åt dem.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: ARBETSPROCESSER I FÖRÄNDRING & 80%-REGELN -->
+    <div id="l2-slide-7" class="l2-slide">
+      <div class="section-title">
+        <span>LÄRARENS ARBETSPROCESS I FÖRÄNDRING: 5 STEG & "80 %-REGELN"</span>
+        <span class="meta">Hur vi arbetar iterativt med språkmodeller utan att släppa vårt professionella ansvar</span>
+      </div>
+      <div class="grid" style="margin-bottom:16px;">
+        <div class="box orange" style="cursor:default;">
+          <div class="date">STEG 1</div>
+          <div class="title">Tänk igenom syftet</div>
+          <div class="badge">Vet du vad du vill nå? Bolla annars idéer med AI först!</div>
+        </div>
+        <div class="box blue" style="cursor:default;">
+          <div class="date">STEG 2</div>
+          <div class="title">Formulera tydlig prompt</div>
+          <div class="badge">Ge Roll, Kontext, Uppgift, Format & Ton</div>
+        </div>
+        <div class="box gold" style="cursor:default;">
+          <div class="date">STEG 3</div>
+          <div class="title">ITERERA MÅNGA GÅNGER!</div>
+          <div class="badge">Be om nya vinklar & förfina – nöj dig aldrig med utkast 1</div>
+        </div>
+        <div class="box purple" style="cursor:default;">
+          <div class="date">STEG 4</div>
+          <div class="title">Slutbearbeta & Granska</div>
+          <div class="badge">Faktagranska, korra & säkra att du står för varje ord</div>
+        </div>
+        <div class="box green" style="cursor:default;">
+          <div class="date">STEG 5</div>
+          <div class="title">Montera i kontext</div>
+          <div class="badge">Anpassa till din lektion, plattform & elevgrupp</div>
+        </div>
+      </div>
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>🚀 80 %-regeln (Christian Lauritzen, AI Sweden Podcast):</h3>
+        <p style="font-size:14px; font-style:italic; margin:0;">
+          "Värdet i att använda AI-tekniken ligger i att man kan effektivisera och snabba upp processer. Vad man än använder så kan man accelerera upp tiden till hälften eller en bråkdel. <strong>Men det man får ut är en åttioprocentig lösning. Sedan måste man ta vid själv.</strong>"
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: PRÖVA OCH ÖVA + SUMMERA LEKTION 2 -->
+    <div id="l2-slide-8" class="l2-slide">
+      <div class="section-title">
+        <span>STEG 3 & 4: PRÖVA OCH ÖVA (25 MIN I GRUPPER) + SUMMERA & LÄNKA</span>
+        <span class="meta">Från "Slutprodukt-fällan" till "Process-design" inför nästa veckas kursuppgift</span>
+      </div>
+      <div class="box blue" style="text-align: left; padding: 20px; cursor: default; margin-bottom: 16px;">
+        <div style="font-size: 16px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">
+          🛠️ Workshop-case (Breakout rooms 25 min): Rädda lärprocessen i "Svarta lådan"!
+        </div>
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+          Utgå från Rangsjö & Tensettis citat: <em>"Eleverna lär sig inte något alls av att låta en AI skriva en text som de sätter namn på och lämnar in"</em> samt Winerös modell av <strong>Svarta lådan</strong>. Välj en klassisk uppgift från er egen undervisning och gör tre saker tillsammans:
+        </p>
+        <ol style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6;">
+          <li><strong>Identifiera risken:</strong> Hur skulle en elev idag kunna hoppa över hela lärprocessen ("Svarta lådan") i den här uppgiften med hjälp av en GPAI-chattbot?</li>
+          <li><strong>Designa om för lärande:</strong> Hur kan ni ändra uppgiften så att AI istället blir en <em>handledare i själva processen</em> (t.ex. ge formativ återkoppling, agera motdebattör eller förklara svåra begrepp på elevens nivå)?</li>
+          <li><strong>Testa 80 %-regeln live:</strong> Formulera och iterera fram en prompt (minst 3 vändor!) som skapar detta processtöd – och granska vilka 20 % ni som lärare måste justera själva på slutet.</li>
+        </ol>
+      </div>
+
+      <div class="exam-card" style="border-color: var(--green);"> 
+<!-- OMVÄRLDSSPANING LEKTION 2 -->
+      <div class="exam-cards" style="margin-bottom: 16px;">
+        <div class="exam-card" style="border-color: var(--gold);">
+          <h3>🔭 Veckans Omvärldsspaning (Hani delar)</h3>
+          <p style="font-size:13px; margin:0 0 6px 0;">
+            <strong>Aktuellt i AI-världen & skolan denna vecka:</strong>
+          </p>
+          <ul style="font-size:13px; padding-left:18px; margin:0; line-height:1.6;">
+            <li><strong>Nya modell- och verktygsuppdateringar:</strong> Vad har släppts eller förändrats i de stora språkmodellerna i veckan?</li>
+            <li><strong>Skoldebatten & forskning:</strong> Aktuella utspel, riktlinjer eller nyheter som berör lärarprofessionen.</li>
+          </ul>
+        </div>
+        <div class="exam-card" style="border-color: var(--purple);">
+          <h3>🗣️ Öppet golv: Vad har ni hört, läst eller testat?</h3>
+          <p style="font-size:13px; margin:0 0 6px 0;">
+            <strong>Dela med dig till kollegorna i kursen (5 min):</strong>
+          </p>
+          <ul style="font-size:13px; padding-left:18px; margin:0; line-height:1.6;">
+            <li>Har någon stött på en ny AI-nyhet, ett klipp eller en diskussion i fikarummet under veckan?</li>
+            <li>Har ni upptäckt en smart funktion under dagens workshop som resten av gruppen borde känna till?</li>
+          </ul>
+        </div>
+      </div>
+
+        <h3>✅ Summera & Länka till Kursvecka 3 (Måndag 9 november):</h3>
+        <p style="font-size:13px; margin:0;">
+          • <strong>Mikroreflektion i chatten:</strong> Vad tar du med dig från "Svarta lådan" och "80 %-regeln" till din egen arbetsvecka?<br>
+          • <strong>Inför nästa måndag (9 nov – Individanpassat lärande & Inkludering):</strong> Nästa vecka startar vi <strong>Inlämningsuppgift 1 (IG/G)</strong>! Fundera redan nu på om du vill skriva <em>a) en reflektionsrapport</em> eller <em>b) utforma en konkret individanpassad undervisningsplan</em> för din verksamhet.
+        </p>
+      </div>
+    </div>
+  </div>
+<!-- VIEW LESSON 3: LEKTION 3 – INDIVIDANPASSAD UNDERVISNING (9 NOV) -->
+  <div id="view-lesson3" class="view">
+    <div class="section-title">
+      <span>🖥️ LEKTION 3: FÖRELÄSNING (9 NOV) • INDIVIDANPASSAD UNDERVISNING & INKLUDERING MED AI</span>
+      <span class="meta">1:1-handledning, Skollagen, Rangsjö & Tensetti samt Start av Uppgift 1</span>
+    </div>
+
+    <!-- SLIDE-KNAPPAR FÖR LEKTION 3 -->
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+      <button class="tab-btn active l3-nav-btn" onclick="switchL3Slide(1, this)">1. Översikt</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(2, this)">2. Incheckning (1:1)</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(3, this)">3. Definition</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(4, this)">4. Skollagen</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(5, this)">5. 30 lärare (1:1)</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(6, this)">6. Multimodalitet & VAK</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(7, this)">7. Case: Tensetti vs Winerö</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(8, this)">8. Start Uppgift 1</button>
+      <button class="tab-btn l3-nav-btn" onclick="switchL3Slide(9, this)">9. Spaning (2 Hour) & Utcheck</button>
+    </div>
+
+    <!-- L3 SLIDE 1: ÖVERSIKT -->
+    <div id="l3-slide-1" class="l3-slide" style="display:block;">
+      <div class="circle-steps">
+        <div class="box orange" onclick="switchL3Slide(2, document.querySelectorAll('.l3-nav-btn')[1])">
+          <div class="date">STEG 1 • 15:15–15:25</div>
+          <div class="title">1. INCHECKNING (1:1)</div>
+          <div class="badge">Blooms 2 Sigma & 1:1-klonen</div>
+        </div>
+        <div class="box blue" onclick="switchL3Slide(3, document.querySelectorAll('.l3-nav-btn')[2])">
+          <div class="date">STEG 2 • 15:25–15:55</div>
+          <div class="title">2. KONCEPT & TEORI</div>
+          <div class="badge">Skollagen, 30 lärare & VAK-myten</div>
+        </div>
+        <div class="box gold" onclick="switchL3Slide(7, document.querySelectorAll('.l3-nav-btn')[6])">
+          <div class="date">STEG 3 • 15:55–16:30</div>
+          <div class="title">3. PRÖVA OCH ÖVA</div>
+          <div class="badge">Tensetti vs Winerö + Start Uppg 1</div>
+        </div>
+        <div class="box green" onclick="switchL3Slide(9, document.querySelectorAll('.l3-nav-btn')[8])">
+          <div class="date">STEG 4 • 16:30–16:45</div>
+          <div class="title">4. SPANING & UTCHECK</div>
+          <div class="badge">2 Hour Learning (Texas -> FL/CA/NY)</div>
+        </div>
+      </div>
+      <div class="exam-card" style="border-color: var(--gold);">
+        <h3>🎯 Mål för Kursvecka 3 (Måndag 9 november)</h3>
+        <p style="font-size:14px; margin:0;">Utveckla förståelse för hur AI kan användas för att möta elevers olika behov, erbjuda källstyrt 1:1-stöd och skapa tillgängliga och inkluderande lärmiljöer – med både lärar- och elevfokus.</p>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 2: INCHECKNING -->
+    <div id="l3-slide-2" class="l3-slide" style="display:none;">
+      <div class="checkin-grid">
+        <div class="checkin-box">
+          <h3>1. ÖPPEN FRÅGA: 1:1-HANDLEDAREN?</h3>
+          <p>Om du fick klona dig själv till en tålmodig 1:1-handledare för varje elev under 20 minuter per lektion: Vilken elevgrupp i ditt klassrum skulle vinna allra mest på det direkt imorgon – och vad skulle du själv ägna din frigjorda tid åt?</p>
+        </div>
+        <div class="checkin-box">
+          <h3>2. TA STÄLLNING: 30 LÄRARE SAMTIDIGT?</h3>
+          <p>”En välinstruerad, källstyrd AI-agent kan ge mer träffsäker individanpassning i ett avgränsat ämnesmoment än en ensam lärare med 30 elever.” – Håller du med eller inte? Var går gränsen?</p>
+        </div>
+        <div class="checkin-box">
+          <h3>3. TÄNKA PÅ EN HÄNDELSE?</h3>
+          <p>Berätta om ett tillfälle då du försökte nivåanpassa en uppgift (för extra stöd eller spetsutmaning) men kände att tiden inte räckte till. Hur hade en källstyrd 1:1-bot i NotebookLM eller Copilot kunnat ändra situationen?</p>
+        </div>
+        <div class="checkin-box" onclick="this.querySelector('.answer').style.display='block'">
+          <h3>4. GISSA: BLOOMS 2 SIGMA & TEXAS-MODELLEN? (Klicka för facit)</h3>
+          <p>Benjamin Bloom visade 1984 att elever som får 1:1-handledning presterar i 98:e percentilen (2 Sigma). I en omtalad skolmodell i Texas med 1:1-AI ligger eleverna bland de <strong>främsta 1–2 % i hela USA</strong>. Hur många timmar om dagen läser de teoretiska kärnämnen vid skärmen?</p>
+          <p class="answer" style="display:none; margin-top:10px; background:rgba(0,0,0,0.55); padding:10px; border-radius:4px; font-weight:bold;">
+            ✅ FACIT: Endast 2 timmar om dagen ("2 Hour Learning")! Resten av dagen ägnas åt praktiska workshops, samarbete och livskunskap med mänskliga lärare.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 3: DEFINITION -->
+    <div id="l3-slide-3" class="l3-slide" style="display:none;">
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--blue);">
+          <h3>🟦 DEFINITION: Utgå från eleven – inte en enda lösning</h3>
+          <p style="font-size:14px;">Planering och genomförande utifrån varje elevs individuella behov, förutsättningar, intressen och kunskapsnivå. Målet är att alla ska nå så långt som möjligt genom anpassat innehåll, arbetssätt, tempo och stöd – utan att läraren behöver göra 30 separata kursplaner.</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--blue);">
+          <h3>🟦 PÅ SKOLAN: Olika vägar till samma mål</h3>
+          <ul style="font-size:14px; padding-left:18px; margin:0;">
+            <li>Olika typer av tilltal, uppgifter och svårighetsnivåer.</li>
+            <li>Hänsyn till olika sätt att lära och tidigare erfarenheter.</li>
+            <li>Riktat 1:1-stöd som motverkar funktionsnedsättningars konsekvenser.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 4: SKOLLAGEN -->
+    <div id="l3-slide-4" class="l3-slide" style="display:none;">
+      <div class="exam-card" style="border-color: var(--purple); margin-bottom:16px;">
+        <h3>🟪 SKOLLAGEN (2010:800) KAP. 3, § 2</h3>
+        <p style="font-size:15px; font-style:italic; margin:0;">”2 § Alla barn och elever i samtliga skolformer... ska ges den ledning och stimulans som de behöver i sitt lärande och sin personliga utveckling för att de utifrån sina egna förutsättningar ska kunna utvecklas så långt som möjligt enligt utbildningens mål.”</p>
+      </div>
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--purple);">
+          <h3>1. Stöd vid funktionsnedsättning</h3>
+          <p style="font-size:14px; margin:0;">Ska ges stöd som syftar till att så långt som möjligt motverka funktionsnedsättningens konsekvenser (t.ex. tydliggörande struktur, kognitiv avlastning, uppläsning och tålmodig 1:1-repetition).</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--gold);">
+          <h3>2. Stimulans för att nå längre (Lag 2022:146)</h3>
+          <p style="font-size:14px; margin:0;">Elever som lätt uppfyller betygskriterierna ska ges ledning och stimulans för att nå längre (t.ex. sokratiska AI-agenter som utmanar med svårare perspektivfrågor och case).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 5: 30 LÄRARE SAMTIDIGT -->
+    <div id="l3-slide-5" class="l3-slide" style="display:none;">
+      <div class="exam-card" style="border-color: var(--gold); margin-bottom:16px;">
+        <h3>🟨 RANGSJÖ & TENSETTI (2024): DET KOMPENSATORISKA UPPDRAGET</h3>
+        <p style="font-size:15px; font-style:italic; margin:0;">”Du går inte miste om någonting alls [i skolan] men det är ett väldigt bra verktyg att ge till eleverna.” — Jonatan Tensetti</p>
+      </div>
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--orange);">
+          <h3>🟧 Den omöjliga ekvationen</h3>
+          <p style="font-size:14px; margin:0;">Att undervisa individanpassat (1:1) för varje elev är en nästintill omöjlig uppgift som skulle kräva trettio lärare samtidigt i klassrummet. Tidigare har man försökt pussla ihop det med assistenter – men nu finns AI!</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--blue);">
+          <h3>🟦 30 egna 1:1-lärare med hem</h3>
+          <p style="font-size:14px; margin:0;">Sätt en avgränsad chattbot/AI-agent i händerna på eleven, instruera eleven i hur den ska tala med boten och instruera boten i hur den ska bemöta eleven. Plötsligt har alla 30 egna 1:1-handledare som följer med hem!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 6: MULTIMODALITET & VAK -->
+    <div id="l3-slide-6" class="l3-slide" style="display:none;">
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--purple);">
+          <h3>🟪 Multimodalitet och olika sätt att lära</h3>
+          <p style="font-size:14px;"><strong>AI:s roll:</strong> Gör det enkelt för läraren att snabbt ta fram multimodalt material anpassat efter elevens behov (text till tal, visuella ankare, AI-poddar i NotebookLM, förenklade förklaringar).</p>
+          <p style="font-size:14px; margin:0;">När modaliteter samverkar (text, bild, ljud, handling) skapas djupare förståelse för alla elever.</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--orange);">
+          <h3>🟧 Varning för "lärstilsmyten" (VAK-modellen, s. 40)</h3>
+          <p style="font-size:14px;">Under 90- och 00-talet var VAK-modellen (visuell, auditiv, kinestetisk) populär, men forskning visar att <strong>föredragen modalitet inte korrelerar med effektiv inlärning</strong> (Rangsjö & Tensetti, s. 40).</p>
+          <p style="font-size:13px; margin:0; color:var(--accent);">⚠️ Passa dig för AI-råden: Lärstilsmyten lever kvar i språkmodellernas träningsdata. Lås aldrig in en elev som "enbart visuell inlärare"!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 7: CASE TENSETTI VS WINERÖ -->
+    <div id="l3-slide-7" class="l3-slide" style="display:none;">
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--blue);">
+          <h3>🟦 JONATAN TENSETTI: AI som medium & 1:1-handledare</h3>
+          <p style="font-size:14px; margin:0;">Ser AI som ett medium för skapande där dina egna idéer och tankar är styrande. Ge en instruerad bot till eleverna för individanpassning i klassrummet och hemma.</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--orange);">
+          <h3>🟧 ERIK WINERÖ: AI som hantverkare & genvägsrisk</h3>
+          <p style="font-size:14px; margin:0;">Ser generativ AI mer som en hantverkare som gör mycket åt oss – men varnar för att eleven missar den kognitiva friktionen i "The Black Box" och därmed själva lärandet.</p>
+        </div>
+      </div>
+      <div class="exam-card" style="border-color: var(--gold); margin-top:16px;">
+        <h3>💬 Diskussionsfråga för grupprummet (15 min)</h3>
+        <p style="font-size:14px; margin:0;">Hur landar ni i denna spänning när ni planerar era egna uppgifter? Formulera <strong>två gyllene regler</strong> för hur en 1:1-bot ska instrueras så att den fungerar som <em>Tensettis sokratiska coach</em> utan att bli <em>Winerös färdiga svarsmaskin</em>!</p>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 8: START UPPGIFT 1 -->
+    <div id="l3-slide-8" class="l3-slide" style="display:none;">
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--blue);">
+          <h3>📌 VAL A: Reflektionsrapport (800–1000 ord)</h3>
+          <p style="font-size:14px; margin:0;">Beskriv och diskutera AI:s påverkan på lärande och individanpassad 1:1-undervisning i ett specifikt utbildningssammanhang med stöd av kurslitteraturen (Nygren samt Rangsjö & Tensetti).</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--purple);">
+          <h3>📌 VAL B: Konkret undervisningsplan</h3>
+          <p style="font-size:14px; margin:0;">Utforma en konkret undervisningsplan för din verksamhet där du använder AI-verktyg för att individanpassa lärandet (t.ex. för tre skilda elevprofiler).</p>
+        </div>
+      </div>
+      <div class="exam-card" style="border-color: var(--green); margin-top:16px;">
+        <h3>✅ Betygsnivå: IG / G (Deadline 7 dec) • Workshop nu (20 min)</h3>
+        <p style="font-size:14px; margin:0;">Inget VG-krav på deluppgifterna (VG prövas på slutprovet vecka 9). Börja skissa på ditt val (A eller B) i grupper och testa era första individanpassnings-prompter i Copilot, Gemini eller NotebookLM!</p>
+      </div>
+    </div>
+
+    <!-- L3 SLIDE 9: SPANING (2 HOUR LEARNING) & UTCHECKNING -->
+    <div id="l3-slide-9" class="l3-slide" style="display:none;">
+      <div class="exam-cards">
+        <div class="exam-card" style="border-color: var(--green);">
+          <h3>🔭 Hanis Omvärldsspaning: "2 Hour Learning" (Texas -> FL, CA & NY)</h3>
+          <p style="font-size:13.5px; margin-bottom:8px;"><strong>1:1-undervisning i extrem skala:</strong> I Texas (Alpha School / <em>2 Hour Learning</em>) läser eleverna alla akademiska kärnämnen på <strong>endast 2 timmar per dag</strong> med adaptiva 1:1-AI-handledare som anpassar tempo och svårighetsgrad i realtid.</p>
+          <p style="font-size:13.5px; margin:0;"><strong>Topp 1–2 % i USA & Expansion:</strong> Eleverna presterar bland de <strong>främsta 1–2 % i hela landet</strong> på nationella prov, och eftermiddagarna ägnas helt åt livskunskap, samarbete och projekt med mänskliga lärare. Nu expanderar och testas 2-timmarsmodellen även i <strong>Florida, Kalifornien och New York</strong>!</p>
+        </div>
+        <div class="exam-card" style="border-color: var(--gold);">
+          <h3>💬 Öppet Golv & Utcheckning inför Vecka 4 (16 nov)</h3>
+          <p style="font-size:13.5px; margin-bottom:8px;"><strong>1. Utcheckningsfråga i chatten:</strong> Om 1:1-AI kan halvera tiden för ren kunskapsinhämtning – vad ser du som den största vinsten respektive faran med en modell som <em>2 Hour Learning</em> i svensk skola?</p>
+          <p style="font-size:13.5px; margin:0;"><strong>2. Nästa måndag (16 nov kl. 15:15):</strong> Vi gästas av <strong>Kristina Alexandersson (Internetstiftelsen)</strong> kl. 15:30–16:15 på temat <em>Källkritik, Bias & Algoritmer</em>!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- VIEW 3: EXAMINATIONER & BETYGSKRITERIER -->
+  <div id="view-exams" class="view">
+    <div class="section-title">
+      <span>EXAMINERANDE MOMENT I DEL 1 (YHAIAI03, 20 P): VECKA 1–10 (26 OKT – 28 DEC)</span>
+      <span class="meta">Uppgift 1 & 2 bedöms med IG/G • Det digitala slutprovet ger möjlighet till VG!</span>
+    </div>
+    <div class="exam-cards">
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>📌 Del 1 – Inlämningsuppgift 1: Individanpassat lärande</h3>
+        <p style="font-size:12px; color:var(--muted); margin-top:0;">Kursvecka 3–7 (9 nov – 7 dec) | Betygsskala: <strong>IG / G</strong> (Godkänd nivå räcker)</p>
+        <p style="font-size:13px;">Välj ett av alternativen i Omniway:<br>
+        <strong>a)</strong> <em>Reflektionsrapport</em> om AI:s påverkan på lärande och individanpassad undervisning i ett specifikt utbildningssammanhang, <strong>eller</strong><br>
+        <strong>b)</strong> <em>Konkret undervisningsplan</em> (för en lektionssekvens eller ett arbetsområde i din egen verksamhet) där du använder AI-verktyg för att individanpassa lärandet.</p>
+        <p style="font-size:12px; margin-bottom:0;"><span class="grade-pill green">G (Godkänt)</span>Visar förståelse för hur AI kan användas för att möta elevers olika behov och skapa tillgängliga och inkluderande lärmiljöer (med både lärar- och elevfokus).</p>
+      </div>
+
+      <div class="exam-card" style="border-color: var(--purple);">
+        <h3>📌 Del 1 – Inlämningsuppgift 2: Säker AI-implementeringsplan</h3>
+        <p style="font-size:12px; color:var(--muted); margin-top:0;">Kursvecka 7–10 (7 dec – 28 dec) | Betygsskala: <strong>IG / G</strong> (Godkänd nivå räcker)</p>
+        <p style="font-size:13px;">Ta fram en <strong>säker AI-implementeringsplan</strong> för någon aspekt inom utbildning/skola med fokus på etiska och juridiska principer (dataskydd, GDPR, elevintegritet) samt vilka AI-kompetenser och kompetensbehov som behöver fokuseras på.</p>
+        <p style="font-size:12px; margin-bottom:0;"><span class="grade-pill green">G (Godkänt)</span>Identifierar och tillämpar etiska och juridiska principer för säker och ansvarsfull AI-användning samt utvärderar AI-användning utifrån kompetenser och kompetensbehov.</p>
+      </div>
+
+      <div class="exam-card" style="border-color: var(--orange); grid-column: 1 / -1;">
+        <h3>📝 Del 1 – Digitalt Slutprov (Kan leda till VG i Delkurs 1!)</h3>
+        <p style="font-size:12px; color:var(--muted); margin-top:0;">Kursvecka 9 (21 dec) | Betygsskala: <strong>IG / G / VG</strong> (Ordinarie prov + 2 omprov)</p>
+        <p style="font-size:13px;">Skriftlig digital tentamen i Omniway som prövar teoretisk förståelse av kursens centrala teman och begrepp samt förmågan att reflektera över praktisk tillämpning ur ett etiskt och pedagogiskt perspektiv.</p>
+        <p style="font-size:12px; margin-bottom:0;"><span class="grade-pill blue">G</span>Godkänd (G) på Inlämningsuppgift 1 och 2 samt uppnådda lärandemål på provet. <span class="grade-pill gold">VG</span>Uppvisar i det digitala provet en högre grad av teoretisk medvetenhet och förmåga till självständig analys genom att problematisera och kritiskt granska kunskaperna i relation till både teori och praktisk tillämpbarhet.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 28px;">
+      <span>EXAMINERANDE MOMENT I DEL 2 (YHAIPA03, 20 P): VECKA 11–20 (4 JAN – 8 MARS)</span>
+      <span class="meta">Uppgift 1 & 2 bedöms med IG/G (AIAS Nivå 2 gäller) • Det digitala slutprovet ger möjlighet till VG!</span>
+    </div>
+    <div class="exam-cards">
+      <div class="exam-card" style="border-color: var(--blue);">
+        <h3>📌 Del 2 – Inlämningsuppgift 1: Undervisningsplanering med AI</h3>
+        <p style="font-size:12px; color:var(--muted); margin-top:0;">Vecka 12–13 (11 jan – 18 jan) | Betygsskala: <strong>IG / G</strong> | Omfång: <strong>800–1000 ord</strong> (exkl. prompter)</p>
+        <p style="font-size:13px;">Skriv en sammanhängande reflektionsrapport i <strong>två delar</strong> med <strong>minst 3 referenser</strong> till litteraturen (Nygren s. 6–13, 50–65, 202–222 samt Rangsjö & Tensetti + <em>Promptskolan 1–3</em>):<br>
+        <strong>Del 1 (Inzoomning):</strong> Översiktlig beskrivning och diskussion av AI:s möjligheter kring undervisningsplanering.<br>
+        <strong>Del 2 (Konkret exempel):</strong> Belys och diskutera ett konkret exempel på AI-användande gällande undervisningsplanering i din verksamhet (t.ex. en delad prompt eller en AI-agent i Copilot/Gemini för arbetslaget).<br>
+        <em>Obs! AIAS Nivå 2 gäller: AI får endast användas för idébollning inför uppgiften och ska redovisas under rubriken "Mitt användande av AI i uppgiften".</em></p>
+        <p style="font-size:12px; margin-bottom:0;"><span class="grade-pill green">G (Godkänt)</span>Visar kunskaper om AI-verktyg (adaptiva plattformar, handledare, assistenter) samt färdigheter att implementera AI för att effektivisera undervisningsplanering.</p>
+      </div>
+
+      <div class="exam-card" style="border-color: var(--green);">
+        <h3>📌 Del 2 – Inlämningsuppgift 2: NotebookLM-design & Källkritik/AI-texter</h3>
+        <p style="font-size:12px; color:var(--muted); margin-top:0;">Vecka 14–16 (25 jan – 8 feb) | Betygsskala: <strong>IG / G</strong> | Omfång: <strong>ca 500 + 500 ord</strong></p>
+        <p style="font-size:13px;">Uppgiften består av två delar (AIAS Nivå 2 gäller även här):<br>
+        <strong>Del 1 – Designrapport i NotebookLM:</strong> Beskriv hur du designar en individanpassad lärmiljö i <strong>NotebookLM</strong> för en specifik elev/målgrupp. Antingen som <em>1) skriftlig text (ca 500 ord + minst 3 skärmdumpar)</em> eller <em>2) skärminspelning (ca 10 min)</em>. Ska innehålla <strong>minst 2 referenser</strong> (Nygren kap. 6 s. 224–240; Rangsjö & Tensetti kap. 3 s. 33–70).<br>
+        <strong>Del 2 – Identifiera AI-texter & Alternativ (ca 500 ord):</strong> Redogör för varför det är problematiskt att identifiera AI-texter samt vilka alternativa arbetssätt som rekommenderas i litteraturen. Ska innehålla <strong>minst 3 referenser</strong> (Rangsjö & Tensetti kap. 7 s. 181–185 & kap. 8 s. 193–217; Nygren kap. 4 s. 123–128).</p>
+        <p style="font-size:12px; margin-bottom:0;"><span class="grade-pill green">G (Godkänt)</span>Visar kompetens att skapa individanpassade lärmiljöer med AI samt kunskaper om källkritiska metoder, tillförlitlighet, analys av elevresultat och återkoppling.</p>
+      </div>
+
+      <div class="exam-card" style="border-color: var(--orange); grid-column: 1 / -1;">
+        <h3>📝 Del 2 – Digitalt Slutprov (Kan leda till VG i Delkurs 2!)</h3>
+        <p style="font-size:12px; color:var(--muted); margin-top:0;">Vecka 19 (1 mars) | Betygsskala: <strong>IG / G / VG</strong> (Kompletteringar och avslutning 8 mars)</p>
+        <p style="font-size:13px;">Skriftlig digital tentamen i Omniway som prövar teoretisk förståelse och förmågan att reflektera över praktisk tillämpning kring undervisningsplanering, individanpassning/AI-agenter, källkritik/rättssäkerhet samt återkoppling och bedömning med AI.</p>
+        <p style="font-size:12px; margin-bottom:0;"><span class="grade-pill blue">G</span>Godkänd (G) på Inlämningsuppgift 1 och 2 samt uppnådda lärandemål på det digitala provet. <span class="grade-pill gold">VG</span>Uppvisar i det digitala provet en högre grad av teoretisk medvetenhet och förmåga till självständig analys genom att problematisera och kritiskt granska praktisk AI-tillämpning i undervisning, planering, uppföljning och bedömning.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FOR LESSON DETAILS -->
+  <div id="lesson-modal" class="modal-backdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal">
+      <div id="modal-header" class="modal-header orange">
+        <h2 id="modal-title">Lektion</h2>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-desc" style="font-size: 14px; margin-top: 0;"></p>
+        <div class="detail-grid">
+          <div class="detail-card">
+            <h4>📚 Litteratur & Underlag</h4>
+            <p id="modal-lit"></p>
+          </div>
+          <div class="detail-card">
+            <h4>🛠️ Pröva & Öva (Aktivitet)</h4>
+            <p id="modal-workshop"></p>
+          </div>
+          <div class="detail-card">
+            <h4>🎯 Mål för veckan</h4>
+            <p id="modal-goal"></p>
+          </div>
+          <div class="detail-card">
+            <h4>📌 Examination / Milstolpe</h4>
+            <p id="modal-badge"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const lessonData = {
+    1: {
+      date: "Kursvecka 1 • Mån 26 Okt (15:15–16:45)",
+      title: "Kursintroduktion & Lärarautonomi",
+      color: "orange",
+      desc: "Introduktion till kursens syfte, struktur, mål och bedömningsformer (IG/G på Uppgift 1 & 2, medan det digitala slutprovet kan ge VG). Genomgång av kursplattformen Omniway, arbetssätt, handledningstillfällen och lärarprofessionens autonomi.",
+      lit: "Thomas Nygren: 'AI i skolan: möjligheter och utmaningar i undervisningen' (Inledning) + Svenskt Näringslivs AIA-guide.",
+      workshop: "Gemensamt uppstartstillfälle: Deltagarna presenterar sig, delar förväntningar och reflekterar kring AI i skolan på ett allmänt plan ('Förändring med lärande'-case).",
+      goal: "Orientering i kursens upplägg och förstå hur kursens innehåll, arbetsformer och mål hänger samman.",
+      badge: "Ingen examination denna vecka. Svara på startenkäten senast söndag 1 november!"
+    },
+    2: {
+      date: "Kursvecka 2 • Mån 2 Nov (15:15–16:45)",
+      title: "AI:s roll i utbildning – Möjligheter & utmaningar",
+      color: "orange",
+      desc: "AI-historik (Turing, AI-vintrar, djupinlärning), språkmodeller (LLM) kontra chattbot-gränssnitt, GPAI vs DSGAI, 'Black Box'-problematiken (var lärandet faktiskt sker!), dold bias i prompter samt 80 %-regeln och lärarens iterativa 5-stegsprocess.",
+      lit: "Thomas Nygren: 'AI i skolan' (Kap. 1–2) + Rangsjö & Tensetti ('Med AI som stöd', s. 23) + Erik Winerös modell av 'Svarta lådan'.",
+      workshop: "Rädda lärprocessen i 'Svarta lådan' (25 min): Designa om en skoluppgift från slutprodukt-fokus till processtöd och testa iterativ promptning enligt 80 %-regeln.",
+      goal: "Förstå AI:s grundläggande roll, begrepp (LLM, GPAI, DSGAI, Black Box) och effekter på lärandeprocessen samt reflektera över möjligheter och utmaningar.",
+      badge: "💡 Öppna fliken '🖥️ Lektion 2: Föreläsning (2 nov)' högst upp för att köra hela bildspelet interaktivt!"
+    },
+    3: {
+      date: "Kursvecka 3 • Mån 9 Nov (15:15–16:45)",
+      title: "Individanpassat lärande & Inkludering med AI",
+      color: "blue",
+      desc: "Hur AI kan användas för att skapa individanpassade lärvägar och inkluderande undervisningsmiljöer – med både lärar- och elevfokus.",
+      lit: "Nygren ('AI i skolan' – kapitel om didaktik, inkludering och likvärdighet) + praktiska AI-verktyg i Omniway.",
+      workshop: "Workshop med praktiska AI-verktyg och handledning kring planering av ett case kring individanpassat lärande.",
+      goal: "Utveckla förståelse för hur AI kan användas för att möta elevers olika behov och skapa tillgängliga lärmiljöer.",
+      badge: "📌 Start av Inlämningsuppgift 1 (IG/G): Välj a) Reflektionsrapport eller b) Konkret undervisningsplan."
+    },
+    4: {
+      date: "Kursvecka 4 • Mån 16 Nov (15:15–16:45)",
+      title: "Källkritik, Bias, Algoritmer & Lärarrollen",
+      color: "gold",
+      desc: "Fördjupning i hur tekniken och algoritmerna påverkar undervisning, lärarroll och elevernas källkritiska förmåga utifrån Kristina Alexanderssons kapitel i kursboken 'Med AI som stöd'.",
+      lit: "🎙️ Gästföreläsare: Kristina Alexandersson (Internetstiftelsen & medförfattare i Rangsjös & Tensettis bok 'Med AI som stöd').",
+      workshop: "Tvärtom-metoden & Diskussion: Hur använder vi AI som pedagogiskt stöd och tränar eleverna i att avslöja AI-hallucinationer och snedvridna perspektiv?",
+      goal: "Förstå och kritiskt kunna granska algoritmers påverkan, källkritiska utmaningar och hur elever rustas i kritiskt tänkande.",
+      badge: "🎙️ Gästföreläsning med Kristina Alexandersson (den 16 november)."
+    },
+    5: {
+      date: "Kursvecka 5 • Mån 23 Nov (15:15–16:45)",
+      title: "Etik, ansvar, GDPR & Dataskydd",
+      color: "purple",
+      desc: "Etiska och juridiska frågor kopplade till AI i skolan, inklusive dataskydd, GDPR, skollag, 'Shadow AI' och elevintegritet.",
+      lit: "Nygren ('AI i skolan') + Svenskt Näringslivs AIA-guide (GDPR & Riskpyramiden).",
+      workshop: "Föreläsning och arbete kring etiska dilemman (Apollo 13-case) och lärarens/utbildarens professionella ansvar.",
+      goal: "Att kunna känna till, identifiera och tillämpa etiska och juridiska principer för säker och ansvarsfull användning av AI i undervisningen.",
+      badge: "Ingen ny examination denna vecka. Handledning kring Uppgift 1 vid behov."
+    },
+    6: {
+      date: "Kursvecka 6 • Mån 30 Nov (15:15–16:45)",
+      title: "Implementering av AI i praktiken",
+      color: "blue",
+      desc: "Från teori till praktik – hur AI kan planeras och införas i undervisningen på ett pedagogiskt, vetenskapligt och etiskt hållbart sätt.",
+      lit: "Kursboken 'AI i skolan: möjligheter och utmaningar i undervisningen' (Nygren) + praktiska exempel i Omniway.",
+      workshop: "Workshop och handledning kring hur man kan utforma strategier för implementering av AI-baserat undervisningsinnehåll eller arbetsuppgifter i en specifik utbildnings- eller skolkontext.",
+      goal: "Att kunna utveckla förmåga att planera och motivera ett AI-baserat undervisningsmoment som stödjer lärande och inkludering.",
+      badge: "Praktisk workshop & slutförande av Inlämningsuppgift 1."
+    },
+    7: {
+      date: "Kursvecka 7 • Mån 7 Dec (15:15–16:45)",
+      title: "Att implementera AI på rätt grunder",
+      color: "purple",
+      desc: "Olika perspektiv på AI och vilka kompetenser som bör och kan fokuseras på i samband med AI-användning (inkl. EU:s AI-förordning Artikel 4 och de 7 kraven på tillhandahållare).",
+      lit: "Nygren ('AI i skolan') + Svenskt Näringslivs AIA-guide (s. 10 & s. 16).",
+      workshop: "Föreläsning och diskussion om olika kompetenser relaterade till AI och vilka konsekvenser samt utmaningar det kan få i skolan.",
+      goal: "Självständigt kunna utvärdera och vidareutveckla AI-användning i undervisning med utgångspunkt i bland annat kompetenser och kompetensbehov.",
+      badge: "✅ Inlämning av Uppgift 1 (IG/G) & uppstart av Inlämningsuppgift 2 (Säker AI-implementeringsplan)."
+    },
+    8: {
+      date: "Kursvecka 8 • Mån 14 Dec (15:15–16:45)",
+      title: "Fördjupad AI-etik & Elevens integritet",
+      color: "purple",
+      desc: "Fördjupning i forskningsbaserade perspektiv på AI, etik, rättvisa, likvärdighet, elevintegritet och kompetensbehov inför utformningen av en säker AI-implementeringsplan.",
+      lit: "Nygren ('AI i skolan' – kapitel om etik, integritet och likvärdighet) + fördjupningsresurser i Omniway.",
+      workshop: "Case & Handledning: Utvärdera och vidareutveckla AI-användning samt praktiskt arbete med säker AI-implementeringsplan (Inlämningsuppgift 2).",
+      goal: "Fördjupa förmågan att omsätta etiska riktlinjer, dataskydd och kompetenskrav i en konkret och säker AI-implementeringsplan.",
+      badge: "Case-workshop & Handledning inför Inlämningsuppgift 2 (IG/G)."
+    },
+    9: {
+      date: "Kursvecka 9 • Mån 21 Dec (15:15–16:45)",
+      title: "Digitalt prov och helhetsförståelse",
+      color: "orange",
+      desc: "Sammanfattning och repetition av kursens centrala teman och begrepp utifrån kursboken 'AI i skolan' och kursveckornas resurser.",
+      lit: "Helhetssyntes av Thomas Nygrens 'AI i skolan', kursresurserna i Omniway och AIA-guiden.",
+      workshop: "Gemensam frågestund, repetitions-case och diskussion inför det digitala provet.",
+      goal: "Fördjupad förståelse för AI:s roll i utbildning och kunna analysera dess möjligheter och risker ur ett etiskt och pedagogiskt perspektiv.",
+      badge: "📝 Examination: Digitalt prov i Omniway för Del 1 (Betygsskala IG / G / VG)."
+    },
+    10: {
+      date: "Kursvecka 10 • Mån 28 Dec (15:15–16:45)",
+      title: "Kursavslutning (Del 1) och kompletteringar",
+      color: "orange",
+      desc: "Tillbakablick på kursens innehåll, lärdomar och framtidsperspektiv på AI i utbildning samt brygga över till Del 2 och kursboken 'Med AI som stöd'.",
+      lit: "Sammanfattning av Del 1 (YHAIAI03 – 20 YH-poäng).",
+      workshop: "Gemensam avslutning med reflektion över den egna utvecklingen och erfarenhetsutbyte mellan deltagare.",
+      goal: "Repetera, sammanfatta och konsolidera kunskap och erfarenheter från den första delkursen.",
+      badge: "✅ Slutinlämning av Uppgift 2 & eventuella kompletteringar av tidigare moment."
+    },
+    11: {
+      date: "Kursvecka 11 (Del 2 Vecka 1) • Mån 4 Jan (15:15–16:45)",
+      title: "Kickoff Del 2: Med AI som stöd & Promptskolan",
+      color: "gold",
+      desc: "Introduktion till Del 2 (YHAIPA03): syfte, schema, mål, AIAS-skalan (nivå 2 vid inlämningsuppgifter) och grupphandledningstillfällen. Vi möter författarna till vår nya kursbok och går igenom Promptskolan del 1–3.",
+      lit: "🎙️ Gästföreläsare: Jonatan Tensetti & Joel Rangsjö ('Med AI som stöd: lyft lärandet med AI') + 'Promptskolan del 1–3' i Omniway.",
+      workshop: "Gemensamt uppstartstillfälle och prompt-verkstad med författarna: Träna på de 5 prompt-elementen (Roll, Kontext, Uppgift, Format, Ton) och iterativ dialog.",
+      goal: "Orientering i den nya kursens upplägg för att förstå hur kursens innehåll, arbetsformer och mål hänger samman.",
+      badge: "🎙️ Kickoff med bokförfattarna Tensetti & Rangsjö! Ingen examination denna vecka."
+    },
+    12: {
+      date: "Kursvecka 12 (Del 2 Vecka 2) • Mån 11 Jan (15:15–16:45)",
+      title: "Planering av undervisning med AI som stöd",
+      color: "blue",
+      desc: "Testa och utvärdera AI-verktyg, anpassningsbara lärplattformar, intelligenta handledare och digitala assistenter för att planera undervisning.",
+      lit: "Nygren s. 6–13 (Inledning), s. 50–65 (Kap. 2: AI i utbildningen) & s. 202–222 (Kap. 5) + Rangsjö & Tensetti ('Med AI som stöd') + Promptskolan del 1–3.",
+      workshop: "Workshop med praktiska och adaptiva AI-verktyg samt handledning kring undervisningsplanering (t.ex. lektionsplaner, case, quiz och bedömningsmatriser).",
+      goal: "Förstå AI:s möjligheter kring undervisningsplanering samt kunna reflektera över möjligheter och utmaningar kring detta i en skol- och utbildningskontext.",
+      badge: "📌 Start av Inlämningsuppgift 1 (Del 2): Reflektionsrapport (800–1000 ord) om undervisningsplanering."
+    },
+    13: {
+      date: "Kursvecka 13 (Del 2 Vecka 3) • Mån 18 Jan (15:15–16:45)",
+      title: "Planering av undervisning med AI som stöd (forts.)",
+      color: "blue",
+      desc: "Fortsatt testning och utvärdering av AI-verktyg för att effektivisera undervisningsplanering och dokumentation i lärarlaget (t.ex. via delade prompter eller AI-agenter i Copilot/Gemini).",
+      lit: "Nygren (s. 6–13, 50–65, 202–222), Rangsjö & Tensetti ('Med AI som stöd'), Promptskolan del 3 ('Vanliga lärarpromptar') samt inspirationssidan Eduai.se.",
+      workshop: "Workshop och grupphandledning kring Inlämningsuppgift 1: Hur kan en gemensam prompt eller AI-agent lösa ett konkret planeringsbehov på din arbetsplats?",
+      goal: "Förstå AI:s möjligheter kring undervisningsplanering samt kunna implementera AI för att skapa anpassade undervisningsplaner.",
+      badge: "✅ Examination: Inlämning av Inlämningsuppgift 1 (Del 2, IG/G – 800–1000 ord, minst 3 referenser)."
+    },
+    14: {
+      date: "Kursvecka 14 (Del 2 Vecka 4) • Mån 25 Jan (15:15–16:45)",
+      title: "Individualisering, adaption & AI-agenter",
+      color: "green",
+      desc: "Från 'fri' AI till pedagogiskt designade lärmiljöer. Vi utforskar hur AI-agenter i Copilot och Gemini kan fungera som kompletterande handledare utifrån lärarens utvalda material – även utan att läraren närvarar.",
+      lit: "Omniway-resurserna: 'AI-agenter och individanpassning' & 'Individanpassning – ett pedagogiskt ideal under tidspress' + Nygren kap. 6 (s. 224–240) + Rangsjö & Tensetti kap. 3 (s. 33–70).",
+      workshop: "Workshop med praktiska och adaptiva AI-verktyg: Konfigurera en specialiserad AI-agent med tydliga ramar, instruktioner och källmaterial för en heterogen elevgrupp.",
+      goal: "Att tillägna sig grundläggande kunskaper om hur man kan designa lärmiljöer för att stärka lärande i elevanpassade, interaktiva och adaptiva lärmiljöer.",
+      badge: "📌 Start av Inlämningsuppgift 2 (Del 2): Designrapport i NotebookLM + Text om AI-texter/källkritik."
+    },
+    15: {
+      date: "Kursvecka 15 (Del 2 Vecka 5) • Mån 1 Feb (15:15–16:45)",
+      title: "Individualisering & Lärmiljödesign i NotebookLM (forts.)",
+      color: "green",
+      desc: "Fortsatt testning och utvärdering av AI-verktyg för individanpassat lärande med fokus på Google NotebookLM som ett digitalt studierum där AI:n enbart utgår från lärarens kvalitetssäkrade källor.",
+      lit: "Nygren kap. 6 ('Fördel människa', s. 224–240) och Rangsjö & Tensetti kap. 3 ('AI och det individanpassade lärandet', s. 33–70).",
+      workshop: "Praktisk verkstad & handledning i NotebookLM: Bygg din individanpassade lärmiljö för en specifik målgrupp/elev (underlag för skärmdumpar eller 10-minuters skärminspelning till Uppgift 2).",
+      goal: "Färdigheter att använda AI (NotebookLM) för att skapa individanpassade lärmiljöer baserat på elevernas unika behov, förutsättningar och utvecklingsnivå.",
+      badge: "Handledning kring Del 1 av Inlämningsuppgift 2 (Designrapport i NotebookLM)."
+    },
+    16: {
+      date: "Kursvecka 16 (Del 2 Vecka 6) • Mån 8 Feb (15:15–16:45)",
+      title: "Källkritik, AI-texter och tillförlitlighet",
+      color: "purple",
+      desc: "Vi diskuterar på vilka sätt fusk, oreflekterad avlastning, deepfakes och AI-genererat innehåll är problematiskt i utbildningssammanhang, varför det är problematiskt att försöka identifiera AI-texter samt vilka alternativ som ökar tillförlitligheten och rättssäkerheten.",
+      lit: "Rangsjö & Tensetti kap. 7 (s. 181–185) & kap. 8 ('Utmaningar, oreflekterad avlastning och deepfakes', s. 193–217) + Nygren kap. 4 ('AI-litteracitet', s. 123–128).",
+      workshop: "Workshop och handledning kring hur man kan bedöma och skapa rättssäkra förutsättningar för examinationer och inlämningsuppgifter (t.ex. med stöd av AIAS-skalan).",
+      goal: "Att skapa sig en uppfattning och förståelse för hur fältet och förutsättningarna ser ut när det gäller tillförlitlighet och rättssäkerhet vid examinationer.",
+      badge: "✅ Examination: Inlämning av Inlämningsuppgift 2 (Del 2, IG/G – Designrapport + 500 ord om AI-texter)."
+    },
+    17: {
+      date: "Kursvecka 17 (Del 2 Vecka 7) • Mån 15 Feb (15:15–16:45)",
+      title: "Återkoppling och bedömning med AI",
+      color: "blue",
+      desc: "Hur man kan arbeta med återkoppling, analys av elevresultat och bedömning med hjälp av AI i en trygg och säker miljö som identifierar både styrkor och utvecklingsområden.",
+      lit: "Rangsjö & Tensetti kap. 7 ('Feedback och bedömning') + Promptskolan del 3 (Exempel 5 & 7: Bedömningsmatriser).",
+      workshop: "Workshop och handledning kring hur man kan prompta snabb, konkret återkoppling via en chattbot och/eller AI-agent samt kritisk reflektion kring detta komplexa ämne.",
+      goal: "Att lära sig mer om AI:s möjligheter kring återkoppling och bedömning samt få möjlighet att diskutera bedömning och återkoppling via AI.",
+      badge: "Praktisk verkstad i AI-stödd återkoppling och bedömningsmatriser."
+    },
+    18: {
+      date: "Kursvecka 18 • Mån 22 Feb (15:15–16:45)",
+      title: "Framtidsspaning, Q&A med Johan Falk & Inför provet",
+      color: "gold",
+      desc: "Vi knyter ihop säcken kring praktisk AI-tillämpning i skolan och gästas av Johan Falk för en exklusiv frågestund och framtidsspaning, följt av gemensam frågestund inför nästa veckas digitala prov.",
+      lit: "🎙️ Gäst (Q&A): Johan Falk + Sammanfattning av Rangsjö & Tensetti och Nygren.",
+      workshop: "Modererad Q&A med Johan Falk där deltagarna ställer sina frågor, följt av repetition och diskussion inför det digitala slutprovet i Del 2.",
+      goal: "Fördjupad helhetsförståelse för tillämpbar AI inom planering, individanpassning, källkritik och återkoppling.",
+      badge: "🎙️ Exklusiv Q&A med Johan Falk!"
+    },
+    19: {
+      date: "Kursvecka 19 (Del 2 Vecka 7/8) • Mån 1 Mars (15:15–16:45)",
+      title: "Digitalt Prov (Del 2) & Fördjupad reflektion",
+      color: "orange",
+      desc: "Skriftlig digital tentamen i Omniway för Del 2 (YHAIPA03) som prövar teoretisk förståelse och förmågan att reflektera över och kritiskt granska praktisk tillämpning.",
+      lit: "Rangsjö & Tensetti ('Med AI som stöd'), Nygren ('AI i skolan'), Promptskolan del 1–3 samt modulresurserna om AI-agenter och individanpassning.",
+      workshop: "Uppsamling, gemensam reflektion och genomförande av det digitala provet i Omniway.",
+      goal: "Självständigt analysera, problematisera och kritiskt granska praktisk AI-användning i undervisning, planering, uppföljning och feedback.",
+      badge: "📝 Examination: Digitalt prov i Omniway för Del 2 (Betygsskala IG / G / VG)."
+    },
+    20: {
+      date: "Kursvecka 20 (Del 2 Vecka 8) • Mån 8 Mars (15:15–16:45)",
+      title: "Avslutning, Återblickar & Utcheckning (40 YH-p)",
+      color: "gold",
+      desc: "Återblickar kring flera av kursens – och hela utbildningens – innehåll, lärdomar och framtidsperspektiv på tillämpbar AI inom olika områden i utbildning.",
+      lit: "Syntes av hela utbildningen (Del 1 YHAIAI03 + Del 2 YHAIPA03 = 40 YH-poäng).",
+      workshop: "Gemensam avslutning med reflektion över den egna utvecklingen, erfarenhetsutbyte mellan deltagare samt gemensam utcheckning som sluter cirkeln från 26 oktober!",
+      goal: "Sammanfatta och konsolidera kunskap och erfarenheter från den avslutande kursen.",
+      badge: "🎓 Examen 40 YH-poäng & eventuella kompletteringar av tidigare moment."
+    }
+  };
+
+  function openLesson(num) {
+    const data = lessonData[num];
+    if (!data) return;
+    const header = document.getElementById('modal-header');
+    header.className = 'modal-header ' + data.color;
+    document.getElementById('modal-title').textContent = data.date + " – " + data.title;
+    document.getElementById('modal-desc').textContent = data.desc;
+    document.getElementById('modal-lit').textContent = data.lit;
+    document.getElementById('modal-workshop').textContent = data.workshop;
+    document.getElementById('modal-goal').textContent = data.goal;
+    document.getElementById('modal-badge').textContent = data.badge;
+    document.getElementById('lesson-modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('lesson-modal').classList.remove('open');
+  }
+
+  function filterCategory(cat, el) {
+    document.querySelectorAll('.legend-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('#view-overview .box').forEach(box => {
+      if (cat === 'all' || box.getAttribute('data-cat') === cat) {
+        box.classList.remove('dimmed');
+      } else {
+        box.classList.add('dimmed');
+      }
+    });
+  }
+
+  function switchView(viewId, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + viewId).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function switchL2Slide(num, btn) {
+    document.querySelectorAll('.l2-slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('l2-slide-' + num).classList.add('active');
+    document.querySelectorAll('.slide-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+function switchL3Slide(num, btn) {
+    document.querySelectorAll('.l3-slide').forEach(s => s.style.display = 'none');
+    document.getElementById('l3-slide-' + num).style.display = 'block';
+    document.querySelectorAll('.l3-nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
